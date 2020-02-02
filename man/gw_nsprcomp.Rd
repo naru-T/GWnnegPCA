@@ -7,7 +7,7 @@ gw_nsprcomp(data, elocat, vars,bw,k=2, kernel, adaptive=TRUE,
             n.obs = NA, n.iter=1, ncomp=k, nneg=TRUE, center = TRUE,...)
 }
 \description{
-Implementation of Geographically Weighted non-negative Principal Component Analysis, whcih consists of the fusion of GWPCA and sparse non-negative PCA.
+Implementation of geographically weighted non-negative principal component analysis, whcih consists of the fusion of GWPCA and sparse non-negative PCA.
 }
 
 \arguments{
@@ -114,7 +114,7 @@ arguments passed to or from other methods.
 
 }
 \author{
-Tsutsumida N., Murakami D.,Yoshida T., Nakaya T., Binbin L., and P. Harris
+Tsutsumida N.
 }
 \note{
 %%  ~~further notes~~

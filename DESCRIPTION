@@ -3,7 +3,7 @@ Type: Package
 Title: Geographically weighted non-negative principal component analysis
 Version: 0.0.1
 Author: Tsutsumida N.
-Maintainer: N. Tsutsumida <naru@kais.kyoto-u.ac.jp>
+Maintainer: N. Tsutsumida <rsnaru.jp@gmail.com>
 Description: Implementation of geographically weighted non-negative principal component analysis, whcih consists of the fusion of GWPCA and sparse non-negative PCA
 License: GPL (>=2)
 Encoding: UTF-8
