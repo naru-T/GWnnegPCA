@@ -97,37 +97,26 @@ arguments passed to or from other methods.
 }
 
 }
-\details{
-%%  ~~ If necessary, more details than the description above ~~
-}
+
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  \item{loadings }{The localized loadings}
+  \item{score }{The PC score by the localized non-negative PCA.}
+  \item{sdev }{The localized standard deviation of the principal components.}
 }
 \references{
-- Tsutsumida N., Murakami D.,Yoshida T., Nakaya T. Exploring geographically weighted non negative principal component analysis for producing index. The 27th meeting of GIS association of Japan, Tokyo, 20-21 October, 2018 (Japanese), http://www.gisa-japan.org/conferences/proceedings/2018/papers/C52.pdf
-- Tsutsumida N., Murakami D., Yoshida T., Nakaya T., Lu B., and P. Harris. Geographically Weighted Non-negative Principal Component Analysis for Exploring Spatial Variation in Multidimensional Composite Index, Geocomputation 2019. doi: 10.17608/k6.auckland.9850826.v1
+Tsutsumida N., Murakami D.,Yoshida T., Nakaya T. Exploring geographically weighted non negative principal component analysis for producing index. The 27th meeting of GIS association of Japan, Tokyo, 20-21 October, 2018 (Japanese), http://www.gisa-japan.org/conferences/proceedings/2018/papers/C52.pdf
+
+Tsutsumida N., Murakami D., Yoshida T., Nakaya T., Lu B., and P. Harris. Geographically Weighted Non-negative Principal Component Analysis for Exploring Spatial Variation in Multidimensional Composite Index, Geocomputation 2019, https://doi.org/10.17608/k6.auckland.9850826.v1
 
 
 }
 \author{
 Tsutsumida N.
 }
-\note{
-%%  ~~further notes~~
-}
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
-}
-
 
 \examples{
+## This example implements the GWnnegPCA for the same data used in the GWmodel example.
+
 library(GWmodel)
 data(DubVoter)
 Data.scaled <- scale(as.matrix(Dub.voter@data[, 4:11]))
