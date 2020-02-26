@@ -1,17 +1,13 @@
-gw_nsprcomp <- function(data, elocat, vars, bw, k=2, kernel, adaptive=TRUE, p=2, theta=0, longlat=FALSE, dMat=NULL,
-                  n.obs = NA, n.iter=1, ncomp=k, nneg=TRUE, center = TRUE, ...) {
-
-  ##This function is based on GWmodel::gwpca and nsprcomp::nsprcomp
-
+gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
+                         p = 2, theta = 0, longlat = FALSE, dMat = NULL, n.obs = NA,
+                         n.iter = 1, ncomp = k, nneg = TRUE, localcenter = TRUE, localscale = FALSE,...)
+{
   requireNamespace("GWmodel")
   requireNamespace("nsprcomp")
-
-  w_nsprcomp <- function(x, wt,ncomp, nneg = nneg, center = center,...) {
+  w_nsprcomp <- function(x, wt, ncomp, nneg = nneg, localcenter = localcenter, localscale = localscale, ...) {
     wt_x <- x * wt
-    nsprcomp(wt_x, ncomp, nneg=nneg,  center = center,...)
-
-  }
-
+    nsprcomp(wt_x, ncomp, nneg = nneg, localcenter = localcenter,  localscale = localscale, ...)
+    }
 
   if (is(data, "Spatial")) {
     p4s <- proj4string(data)
@@ -25,7 +21,7 @@ gw_nsprcomp <- function(data, elocat, vars, bw, k=2, kernel, adaptive=TRUE, p=2,
     elocat <- coordinates(data)
   }
   else {
-    ep.given <- T
+    ep.given <- TRUE
     if (is(elocat, "Spatial")) {
       espdf <- elocat
       elocat <- coordinates(espdf)
@@ -41,17 +37,17 @@ gw_nsprcomp <- function(data, elocat, vars, bw, k=2, kernel, adaptive=TRUE, p=2,
   dp.n <- nrow(data)
   ep.n <- nrow(elocat)
   if (missing(dMat)) {
-    DM.given <- F
-    DM1.given <- F
+    DM.given <- FALSE
+    DM1.given <- FALSE
     if (dp.n + ep.n <= 10000) {
       dMat <- gw.dist(dp.locat = dp.locat, rp.locat = elocat,
                       p = p, theta = theta, longlat = longlat)
-      DM.given <- T
+      DM.given <- TRUE
     }
   }
   else {
-    DM.given <- T
-    DM1.given <- T
+    DM.given <- TRUE
+    DM1.given <- TRUE
     dim.dMat <- dim(dMat)
     if (dim.dMat[1] != dp.n || dim.dMat[2] != ep.n)
       stop("Dimensions of dMat are not correct")
@@ -71,15 +67,12 @@ gw_nsprcomp <- function(data, elocat, vars, bw, k=2, kernel, adaptive=TRUE, p=2,
   var.n <- ncol(x)
   if (len.var > var.n)
     warning("Invalid variables have been specified, please check them again!")
-
-  load <- array(NA,c(ep.n,var.n,k))
+  load <- array(NA, c(ep.n, var.n, k))
   resid_sqsum <- rep(NA, nrow(elocat))
-  s <- matrix(NA,ep.n,k)
-  sdev <- matrix(NA,ep.n,var.n)
-  score.all <-  matrix(NA,ep.n,k)
-
+  s <- matrix(NA, ep.n, k)
+  sdev <- matrix(NA, ep.n, var.n)
+  score.all <- matrix(NA, ep.n, k)
   for (i in 1:ep.n) {
-
     if (DM.given)
       dist.vi <- dMat[, i]
     else {
@@ -99,25 +92,17 @@ gw_nsprcomp <- function(data, elocat, vars, bw, k=2, kernel, adaptive=TRUE, p=2,
                     sep = ", "))
       next
     }
-
-    temp <- w_nsprcomp(x=x[use, ], wt,  ncomp=k, k=ncol(x), nneg, center)
-
-    load[i,,] <- matrix(temp$rotation, ncol=k, nrow=var.n)
-    #score
-    score.all[use, ] <- temp$x[,1:k]
-    s[i,] <- score.all[i,]
-    sdev[i,] <- temp$sdev
+    temp <- w_nsprcomp(x = x[use, ], wt, ncomp = k, k = ncol(x),
+                       nneg, localcenter, localscale)
+    load[i, , ] <- matrix(temp$rotation, ncol = k, nrow = var.n)
+    score.all[use, ] <- temp$x[, 1:k]
+    s[i, ] <- score.all[i, ]
+    sdev[i, ] <- temp$sdev
   }
-
   if (!is.null(rownames(x)))
     dimnames(load)[[1]] <- rownames(x)
   if (!is.null(colnames(x)))
     dimnames(load)[[2]] <- colnames(x)
   dimnames(load)[[3]] <- paste("PC", 1:k, sep = "")
-
-  list(
-    loadings=load,
-    score=s,
-    sdev=sdev
-    )
+  list(loadings = load, score = s, sdev = sdev)
 }

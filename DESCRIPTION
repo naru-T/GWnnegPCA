@@ -4,7 +4,7 @@ Title: Geographically Weighted Non-Negative Principal Components Analysis
 Version: 0.0.1
 Author: N. Tsutsumida 
 Maintainer: N. Tsutsumida <rsnaru.jp@gmail.com>
-Description: It Implements a geographically weighted non-negative principal components analysis, which consists of the fusion of geographically weighted and sparse non-negative principal components analyses.
+Description: Implements a geographically weighted non-negative principal components analysis, which consists of the fusion of geographically weighted and sparse non-negative principal components analyses (Tsutsumida et al., 2019 <doi:10.17608/k6.auckland.9850826.v1>).
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
@@ -12,4 +12,5 @@ Language: en-US
 Depends: R (>= 3.5.0)
 Imports: sp, sf, GWmodel, nsprcomp, methods
 SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0)
+
 

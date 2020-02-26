@@ -2,9 +2,9 @@
 \alias{gw_nsprcomp}
 \title{Geographically Weighted non-negative Principal Component Analysis}
 \usage{
-gw_nsprcomp(data, elocat, vars,bw,k=2, kernel, adaptive=TRUE,
-            p=2, theta=0, longlat=FALSE, dMat=NULL,
-            n.obs = NA, n.iter=1, ncomp=k, nneg=TRUE, center = TRUE,...)
+gw_nsprcomp(data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
+          p = 2, theta = 0, longlat = FALSE, dMat = NULL, n.obs = NA,
+          n.iter = 1, ncomp = k, nneg = TRUE, localcenter = TRUE, localscale = FALSE,...)
 }
 \description{
 Implementation of geographically weighted non-negative principal component analysis, whcih consists of the fusion of GWPCA and sparse non-negative PCA.
@@ -85,11 +85,18 @@ a logical value indicating whether the loadings should be non-negative, i.e. the
 
 }
 
-  \item{center}{
+  \item{localcenter}{
 
-If TRUE, scale function is applied to weighted x.
+If TRUE, local weighted x is centered. The default is TRUE.
 
 }
+
+  \item{localscale}{
+
+If TRUE, local weighted x is scaled. The default is FALSE.
+
+}
+
 
   \item{...}{
 arguments passed to or from other methods.
@@ -111,12 +118,13 @@ Tsutsumida N., Murakami D., Yoshida T., Nakaya T., Lu B., and P. Harris. Geograp
 
 }
 \author{
-Tsutsumida N.
+N. Tsutsumida
 }
 
 \examples{
-## This example implements the GWnnegPCA for the same data used in the GWmodel example.
 
+### This example implements the GWnnegPCA for the same data used in the GWmodel example.
+\donttest{
 library(GWmodel)
 data(DubVoter)
 Data.scaled <- scale(as.matrix(Dub.voter@data[, 4:11]))
@@ -126,14 +134,14 @@ Data.scaled.spdf <- SpatialPointsDataFrame(Coords, as.data.frame(Data.scaled))
 bw_gwnnegpca_ans <- 200
 
 gwnnegpca_ans <- gw_nsprcomp(
-data = Data.scaled.spdf,
-vars = colnames(Data.scaled.spdf@data),
-bw = bw_gwnnegpca_ans,
-k = 8,
-kernel="bisquare",
-adaptive = TRUE,
-nneg=TRUE,
-center=FALSE
+  data = Data.scaled.spdf,
+  vars = colnames(Data.scaled.spdf@data),
+  bw = bw_gwnnegpca_ans,
+  k = 8,
+  kernel="bisquare",
+  adaptive = TRUE,
+  nneg=TRUE,
+  center=FALSE
 )
 
 Dub.voter$gwnnegpcaload_DiffAdd <- gwnnegpca_ans$loadings[,"DiffAdd","PC1"]
@@ -142,28 +150,31 @@ Dub.voter$gwnnegpcaload_SC1 <- gwnnegpca_ans$loadings[,"SC1","PC1"]
 
 spplot(Dub.voter[c("gwnnegpcaload_DiffAdd","gwnnegpcaload_LARent","gwnnegpcaload_SC1")])
 
-##Compare with standard gwpca
-#bw_gwpca_ans <- bw.gwpca(
-#Data.scaled.spdf,
-#vars = colnames(Data.scaled.spdf@data),
-#k = 3,
-#robust = FALSE,
-#adaptive = TRUE
-#)
-#gwpca_ans <- gwpca(
-#Data.scaled.spdf,
-#vars = colnames(Data.scaled.spdf@data),
-#bw = bw.gwpca.basic,
-#k = 8,
-#robust = FALSE,
-#adaptive = TRUE
-#)
+### Compare with standard gwpca
+bw_gwpca_ans <- bw.gwpca(
+  Data.scaled.spdf,
+  vars = colnames(Data.scaled.spdf@data),
+  k = 3,
+  robust = FALSE,
+  adaptive = TRUE
+)
 
-#Dub.voter$gwpcaload_DiffAdd <- gwpca_ans$loadings[,"DiffAdd","PC1"]
-#Dub.voter$gwpcaload_LARent <- gwpca_ans$loadings[,"LARent","PC1"]
-#Dub.voter$gwpcaload_SC1 <- gwpca_ans$loadings[,"SC1","PC1"]
+gwpca_ans <- gwpca(
+  Data.scaled.spdf,
+  vars = colnames(Data.scaled.spdf@data),
+  bw = bw.gwpca.basic,
+  k = 8,
+  robust = FALSE,
+  adaptive = TRUE
+)
 
-#spplot(Dub.voter[c("gwpcaload_DiffAdd","gwpcaload_LARent","gwpcaload_SC1")])
+Dub.voter$gwpcaload_DiffAdd <- gwpca_ans$loadings[,"DiffAdd","PC1"]
+Dub.voter$gwpcaload_LARent <- gwpca_ans$loadings[,"LARent","PC1"]
+Dub.voter$gwpcaload_SC1 <- gwpca_ans$loadings[,"SC1","PC1"]
+
+spplot(Dub.voter[c("gwpcaload_DiffAdd","gwpcaload_LARent","gwpcaload_SC1")])
+
+}
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
