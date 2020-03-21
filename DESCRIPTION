@@ -2,9 +2,13 @@ Package: GWnnegPCA
 Type: Package
 Title: Geographically Weighted Non-Negative Principal Components Analysis
 Version: 0.0.1
-Author: N. Tsutsumida 
-Maintainer: N. Tsutsumida <rsnaru.jp@gmail.com>
-Description: Implements a geographically weighted non-negative principal components analysis, which consists of the fusion of geographically weighted and sparse non-negative principal components analyses (Tsutsumida et al., 2019 <doi:10.17608/k6.auckland.9850826.v1>).
+Authors@R: 
+    c(person(given = "Narumasa",
+             family = "Tsutsumida",
+             role = c("aut", "cre"),
+             email = "rsnaru.jp@gmail.com",
+             comment = c(ORCID = "0000-0002-6333-0301")))
+Description: Implements a geographically weighted non-negative principal components analysis, which consists of the fusion of geographically weighted and sparse non-negative principal components analyses (Tsutsumida N. et al., (2019) <doi:10.17608/k6.auckland.9850826.v1>).
 License: GPL (>=2)
 Encoding: UTF-8
 LazyData: true
