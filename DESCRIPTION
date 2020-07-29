@@ -1,7 +1,7 @@
 Package: GWnnegPCA
 Type: Package
 Title: Geographically Weighted Non-Negative Principal Components Analysis
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     c(person(given = "Narumasa",
              family = "Tsutsumida",
