@@ -1,9 +1,48 @@
 gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
-                         p = 2, theta = 0, longlat = FALSE, dMat = NULL, n.obs = NA,
+                         p = 2, theta = 0, longlat = FALSE, geodisic_measure = "cheap", dMat = NULL, n.obs = NA,
                          n.iter = 1, ncomp = k, nneg = TRUE, localcenter = TRUE, localscale = FALSE,...)
 {
-  requireNamespace("GWmodel")
+
   requireNamespace("nsprcomp")
+
+  weight_func <- function(type, adapt, dist_vec, bw ){
+
+    dist_vec <- as.double(dist_vec)
+
+    if(adapt){
+      bw_size <- as.integer(length(dist_vec) * bw)
+      bw_dist <- as.double(sort(dist_vec)[bw_size])
+
+      if(type=="gaussian"){
+        weight <- exp((-0.5) * ((dist_vec^2)/(bw_dist^2)))
+      }else if(type=="exponential"){
+        weight <- exp((-1) * dist_vec/bw_dist)
+      }else if(type=="bisquare"){
+        weight <-  ifelse((dist_vec > bw_dist), 0 , (1 - (dist_vec^2/bw_dist^2))^2)
+      }else if(type=="tricube"){
+        weight <-  ifelse((dist_vec > bw_dist), 0 , (1 - (dist_vec^3/bw_dist^3))^3)
+      }else if(type=="boxcar"){
+        weight <-  ifelse((dist_vec > bw_dist), 0 , 1)
+      }
+
+    } else{ ##fixed kernel
+      if(type=="gaussian"){
+        weight <- exp((-0.5) * ((dist_vec^2)/(bw^2)))
+      }else if(type=="exponential"){
+        weight <- exp((-1) * dist_vec/bw)
+      }else if(type=="bisquare"){
+        weight <-  ifelse((dist_vec > bw), 0 , (1 - (dist_vec^2/bw^2))^2)
+      }else if(type=="tricube"){
+        weight <-  ifelse((dist_vec > bw), 0 , (1 - (dist_vec^3/bw^3))^3)
+      }else if(type=="boxcar"){
+        weight <-  ifelse((dist_vec > bw), 0 , 1)
+      }
+
+    }
+    return (weight)
+  }
+
+
   w_nsprcomp <- function(x, wt, ncomp, nneg = nneg, localcenter = localcenter, localscale = localscale, ...) {
     wt_x <- x * wt
     nsprcomp(wt_x, ncomp, nneg = nneg, localcenter = localcenter,  localscale = localscale, ...)
@@ -12,6 +51,7 @@ gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
   if (is(data, "Spatial")) {
     p4s <- proj4string(data)
     dp.locat <- coordinates(data)
+    names(dp.locat) <- c("longitude","latitude")
   }
   else if (is(data, "data.frame") && (!missing(dMat)))
     data <- data
@@ -19,12 +59,14 @@ gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
   if (missing(elocat)) {
     ep.given <- FALSE
     elocat <- coordinates(data)
+    names(elocat) <- c("longitude","latitude")
   }
   else {
     ep.given <- TRUE
     if (is(elocat, "Spatial")) {
       espdf <- elocat
       elocat <- coordinates(espdf)
+      names(elocat) <- c("longitude","latitude")
     }
     else if (is.numeric(elocat) && dim(elocat)[2] == 2)
       elocat <- elocat
@@ -36,14 +78,18 @@ gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
   data <- as(data, "data.frame")
   dp.n <- nrow(data)
   ep.n <- nrow(elocat)
+
   if (missing(dMat)) {
     DM.given <- FALSE
     DM1.given <- FALSE
-    if (dp.n + ep.n <= 10000) {
-      dMat <- gw.dist(dp.locat = dp.locat, rp.locat = elocat,
-                      p = p, theta = theta, longlat = longlat)
+
+      if (longlat){
+        dMat <- geodist(dp.locat, elocat, measure = geodisic_measure)
+      }else{
+        dMat <- distmat(dp.locat, elocat)
+      }
+
       DM.given <- TRUE
-    }
   }
   else {
     DM.given <- TRUE
@@ -73,16 +119,10 @@ gw_nsprcomp <- function (data, elocat, vars, bw, k = 2, kernel, adaptive = TRUE,
   sdev <- matrix(NA, ep.n, var.n)
   score.all <- matrix(NA, ep.n, k)
   for (i in 1:ep.n) {
-    if (DM.given)
+
       dist.vi <- dMat[, i]
-    else {
-      if (ep.given)
-        dist.vi <- gw.dist(dp.locat, elocat, focus = i,
-                           p, theta, longlat)
-      else dist.vi <- gw.dist(dp.locat, focus = i, p = p,
-                              theta = theta, longlat = longlat)
-    }
-    wt <- gw.weight(dist.vi, bw, kernel, adaptive)
+
+    wt <- weight_func(type = kernel, adapt = adaptive, dist_vec =dist.vi, bw =bw)
     use <- wt > 0
     wt <- wt[use]
     if (length(wt) <= 5) {

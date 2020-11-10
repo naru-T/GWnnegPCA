@@ -1,7 +1,7 @@
 Package: GWnnegPCA
 Type: Package
 Title: Geographically Weighted Non-Negative Principal Components Analysis
-Version: 0.0.2
+Version: 0.0.4
 Authors@R: 
     c(person(given = "Narumasa",
              family = "Tsutsumida",
@@ -14,7 +14,7 @@ Encoding: UTF-8
 LazyData: true
 Language: en-US
 Depends: R (>= 3.5.0)
-Imports: sp, sf, GWmodel, nsprcomp, methods
+Imports: sp, sf, pracma, geodist, nsprcomp, methods, spData
 SystemRequirements: C++11, GDAL (>= 2.0.1), GEOS (>= 3.4.0), PROJ (>= 4.8.0)
 
 
