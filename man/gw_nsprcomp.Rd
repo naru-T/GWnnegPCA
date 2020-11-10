@@ -154,7 +154,7 @@ boston$gwnnegpcaload_AGE <- gwnnegpca_ans$loadings[,"AGE","PC1"]
 boston$gwnnegpcaload_RAD <- gwnnegpca_ans$loadings[,"RAD","PC1"]
 boston$gwnnegpcaload_TAX <- gwnnegpca_ans$loadings[,"TAX","PC1"]
 
-spplot(boston[c("gwnnegpcaload_AGE","gwnnegpcaload_RAD","gwnnegpcaload_TAX")])
+spplot(boston[c("PC1_load_AGE","PC1_load_RAD","PC1_load_TAX")])
 
 }
 }
