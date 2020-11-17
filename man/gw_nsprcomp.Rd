@@ -127,13 +127,15 @@ N. Tsutsumida
 
 \examples{
 
-### This example implements the GWnnegPCA for the same data used in the GWmodel example.
-\donttest{
+### This example is for demonstrating GWnnegPCA only.
+### The application does not imply any reasonable meanings.
+
+library(sp)
 library(spData)
 library(sf)
 
-boston <- st_read(system.file("shapes/boston_tracts.shp",
-                                 package="spData")[1]) %>% as("Spatial")
+boston <- as(st_read(system.file("shapes/boston_tracts.shp",
+                                 package="spData")[1]), "Spatial")
 Data.scaled <- scale(as.matrix(boston@data[, c("AGE","RAD","TAX")]))
 Coords <- as.matrix(cbind(boston$LON, boston$LAT))
 Data.scaled.spdf <- SpatialPointsDataFrame(Coords, as.data.frame(Data.scaled))
@@ -150,13 +152,13 @@ gwnnegpca_ans <- gw_nsprcomp(
   center=FALSE
 )
 
-boston$gwnnegpcaload_AGE <- gwnnegpca_ans$loadings[,"AGE","PC1"]
-boston$gwnnegpcaload_RAD <- gwnnegpca_ans$loadings[,"RAD","PC1"]
-boston$gwnnegpcaload_TAX <- gwnnegpca_ans$loadings[,"TAX","PC1"]
+boston$PC1_load_AGE <- gwnnegpca_ans$loadings[,"AGE","PC1"]
+boston$PC1_load_RAD <- gwnnegpca_ans$loadings[,"RAD","PC1"]
+boston$PC1_load_TAX <- gwnnegpca_ans$loadings[,"TAX","PC1"]
 
 spplot(boston[c("PC1_load_AGE","PC1_load_RAD","PC1_load_TAX")])
 
-}
+
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the
