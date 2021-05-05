@@ -153,7 +153,7 @@ gw_nsprcomp <-
     load <- array(NA, c(ep.n, var.n, k))
     resid_sqsum <- rep(NA, nrow(elocat))
     s <- matrix(NA, ep.n, k)
-    sdev <- matrix(NA, ep.n, var.n)
+    sdev <- matrix(NA, ep.n, k)
     score.all <- matrix(NA, ep.n, k)
     for (i in 1:ep.n) {
       dist.vi <- dMat[, i]
