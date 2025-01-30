@@ -31,7 +31,8 @@
 #'   \item{sdev}{The localized standard deviation of the principal components}
 #' }
 #'
-#' @importFrom st_centroid st_crs st_coordinates st_geometry st_drop_geometry
+#' @importFrom methods is
+#' @importFrom sf st_centroid st_crs st_coordinates st_geometry st_drop_geometry st_read
 #' @importFrom nsprcomp nsprcomp
 #' @importFrom geodist geodist
 #'
@@ -39,11 +40,11 @@
 #'
 #' @examples
 #' # Read North Carolina SIDS data from sf package
-#' nc <- st_read(system.file("shape/nc.shp", package="sf"))
+#' nc <- sf::st_read(system.file("shape/nc.shp", package="sf"), quiet = TRUE)
 #'
 #' # Scale selected variables for analysis
 #' vars_to_use <- c("SID74", "NWBIR74", "BIR74")
-#' Data.scaled <- scale(as.matrix(st_drop_geometry(nc[, vars_to_use])))
+#' Data.scaled <- scale(as.matrix(sf::st_drop_geometry(nc[, vars_to_use])))
 #'
 #' # Create sf object with scaled data
 #' nc_scaled <- nc
@@ -158,12 +159,12 @@ gw_nsprcomp <-
       )
     }
 
-    if (is(data, "sf")) {
+    if (methods::is(data, "sf")) {
       p4s <- sf::st_crs(data)
       dp.locat <- sf::st_coordinates(sf::st_centroid(data))
       names(dp.locat) <- c("longitude", "latitude")
     }
-    else if (is(data, "data.frame") && (!missing(dMat)))
+    else if (methods::is(data, "data.frame") && (!missing(dMat)))
       data <- data
     else
       stop("Given data must be an sf object or data.frame object")
@@ -175,7 +176,7 @@ gw_nsprcomp <-
     }
     else {
       ep.given <- TRUE
-      if (is(elocat, "sf")) {
+      if (methods::is(elocat, "sf")) {
         espdf <- elocat
         elocat <- sf::st_coordinates(sf::st_centroid(espdf))
         names(elocat) <- c("longitude", "latitude")
@@ -188,7 +189,7 @@ gw_nsprcomp <-
       }
     }
 
-    if (is(data, "sf")) {
+    if (methods::is(data, "sf")) {
       data <- sf::st_drop_geometry(data)
     }
 

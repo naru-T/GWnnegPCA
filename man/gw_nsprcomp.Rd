@@ -10,7 +10,7 @@ gw_nsprcomp(
   vars,
   bw,
   k = 2,
-  kernel,
+  kernel = "gaussian",
   adaptive = TRUE,
   p = 2,
   theta = 0,
@@ -79,11 +79,11 @@ which consists of the fusion of GWPCA and sparse non-negative PCA.
 }
 \examples{
 # Read North Carolina SIDS data from sf package
-nc <- st_read(system.file("shape/nc.shp", package="sf"))
+nc <- sf::st_read(system.file("shape/nc.shp", package="sf"), quiet = TRUE)
 
 # Scale selected variables for analysis
 vars_to_use <- c("SID74", "NWBIR74", "BIR74")
-Data.scaled <- scale(as.matrix(st_drop_geometry(nc[, vars_to_use])))
+Data.scaled <- scale(as.matrix(sf::st_drop_geometry(nc[, vars_to_use])))
 
 # Create sf object with scaled data
 nc_scaled <- nc
