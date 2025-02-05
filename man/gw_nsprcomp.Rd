@@ -67,11 +67,9 @@ gw_nsprcomp(
 }
 \value{
 A list containing:
-\itemize{
-\item{loadings}{The localized loadings}
-\item{score}{The PC score by the localized non-negative PCA}
-\item{sdev}{The localized standard deviation of the principal components}
-}
+\item{loadings}{The localized loadings matrix}
+\item{score}{The PC score matrix from the localized non-negative PCA}
+\item{sdev}{The localized standard deviation vector of the principal components}
 }
 \description{
 Implementation of geographically weighted non-negative principal component analysis,

@@ -25,11 +25,9 @@
 #' @param ... Additional arguments passed to methods
 #'
 #' @return A list containing:
-#' \itemize{
-#'   \item{loadings}{The localized loadings}
-#'   \item{score}{The PC score by the localized non-negative PCA}
-#'   \item{sdev}{The localized standard deviation of the principal components}
-#' }
+#' \item{loadings}{The localized loadings matrix}
+#' \item{score}{The PC score matrix from the localized non-negative PCA}
+#' \item{sdev}{The localized standard deviation vector of the principal components}
 #'
 #' @importFrom methods is
 #' @importFrom sf st_centroid st_crs st_coordinates st_geometry st_drop_geometry st_read
